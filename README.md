@@ -21,3 +21,5 @@ As Promise is a rather complex mechanism, this repository displays the full impl
 8. **exception capture**:  besides explicit rejection, a promise can capture a thrown error or exception in its body
 
 9. **static methods**:  "Promise.resolve", "Promise.reject", "Promise.all" & "Promise.reject"
+
+10. **re-thenablilty**: by calling 'Promise.prototype.then' on a promise multiple times, concurrent async jobs are scheduled

@@ -2,6 +2,7 @@ class Promise {
   constructor(handler) {
     const ref = this
     this.status = 'pending'
+    this.next = []
 
     const _resolve = (p, ref, cb) => {
       p.then((value) => {
@@ -54,8 +55,10 @@ class Promise {
 
     const resolve = (value) => {
       ref.status = 'resolved'
-      if (ref.next) {
-        resolveNext(ref.next, value)
+      if (ref.next && ref.next.length > 0) {
+        ref.next.forEach((promise) => {
+          resolveNext(promise, value)
+        })
       }
     }
 
@@ -78,14 +81,15 @@ class Promise {
   }
 
   then(handler, errorHandler) {
-    this.next = new Promise()
+    var p = new Promise()
     if (handler) {
-      this.next.handler = handler
+      p.handler = handler
     }
     if (errorHandler) {
-      this.next.errorHandler = errorHandler
+      p.errorHandler = errorHandler
     }
-    return this.next
+    this.next.push(p)
+    return p
   }
 
   catch(errorHandler) {

@@ -28,23 +28,27 @@ var timeout = function(ms, value) {
   })
 }
 
-var p1 = Promise.resolve(1).then((value) => {
-  console.log(value, 'p1')
+var p = Promise.resolve()
+
+p.then(() => {
+  console.log('first branch: 1')
+  return timeout(2)
+}).then(() => {
+  console.log('first branch: 2')
 })
 
-var p2 = Promise.reject(2).then((value) => {
-  console.log(value, 'p2')
-}).catch((e) => {
-  console.log(e, 'p2 error')
-})
-
-var p3 = Promise.all([timeout(1, '1'), timeout(2, '2'), timeout(3, '3')]).then((values) => {
-  console.log(values, 'p3')
-})
-
-var p4 = Promise.race([timeout(3, '1'), timeout(1, '2'), timeout(2, '3')]).then((value) => {
-  console.log(value, 'p4')
+p.then(() => {
+  return timeout(1)
+}).then(() => {
+  console.log('second branch: 1')
+  return timeout(2)
+}).then(() => {
+  console.log('second branch: 2')
 })
 
 // expected result:
-// the console output will be: "1 'p1'\n2 'p2 error'" -> (after 1s) -> '2 p4' -> (after 2s) -> "[ '1', '2', '3' ] 'p3'"
+// the console will print the next four results every one second:
+//   first branch: 1
+//   second branch: 1
+//   first branch: 2
+//   second branch: 2

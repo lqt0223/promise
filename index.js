@@ -1,15 +1,18 @@
 class Promise {
   constructor(handler) {
     const ref = this
+    this.status = 'pending'
 
     const resolveNext = (ref, value) => {
       if (ref && ref.deferred) {
+        ref.status = 'resolved'
         var nValue = ref.deferred(value)
         resolveNext(ref.next, nValue)
       }
     }
 
     const resolve = (value) => {
+      ref.status = 'resolved'
       if (ref.next) {
         resolveNext(ref.next, value)
       }

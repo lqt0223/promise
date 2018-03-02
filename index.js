@@ -11,6 +11,20 @@ class Promise {
       }
     }
 
+    const rejectNext = (ref, reason) => {
+      if (!ref) {
+        console.log('UnhandledPromiseRejectionWarning:', reason)
+      } else {
+        ref.status = 'rejected'
+        if (ref.errorHandler) {
+          var nValue = ref.errorHandler(reason)
+          resolveNext(ref.next, nValue)
+        } else {
+          rejectNext(ref.next, reason)
+        }
+      }
+    }
+
     const resolve = (value) => {
       ref.status = 'resolved'
       if (ref.next) {
@@ -20,8 +34,8 @@ class Promise {
 
     const reject = (reason) => {
       ref.status = 'rejected'
-      if (ref.next && ref.next.errorHandler) {
-        ref.next.errorHandler(reason)
+      if (ref.next) {
+        rejectNext(ref.next, reason)
       }
     }
 

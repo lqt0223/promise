@@ -13,3 +13,5 @@ As Promise is a rather complex mechanism, this repository displays the full impl
 4. **status control**: a promise has a initial state of 'pending', and will shift either to 'resolved' or 'rejected'
 
 5. **error handling**: Promise.prototype.then' with error handler & Promise.prototype.catch' are ways to handle errors
+
+6. **error propagation**: a rejected reason will be propagated to the nearest error handler or catch body. Jobs between the rejection and the nearest error handler would not be executed. After the error handling, the promise chain resumes execution

@@ -4,9 +4,9 @@ class Promise {
     this.status = 'pending'
 
     const resolveNext = (ref, value) => {
-      if (ref && ref.deferred) {
+      if (ref && ref.handler) {
         ref.status = 'resolved'
-        var nValue = ref.deferred(value)
+        var nValue = ref.handler(value)
         resolveNext(ref.next, nValue)
       }
     }
@@ -18,17 +18,35 @@ class Promise {
       }
     }
 
+    const reject = (reason) => {
+      ref.status = 'rejected'
+      if (ref.next && ref.next.errorHandler) {
+        ref.next.errorHandler(reason)
+      }
+    }
+
     if (handler && handler.constructor && handler.constructor.name == 'Function') {
       setTimeout(() => {
-        handler(resolve)
+        handler(resolve, reject)
       }, 0)
     }
   }
 
-  then(deferred) {
+  then(handler, errorHandler) {
     this.next = new Promise()
-    this.next.deferred = deferred
+    if (handler) {
+      this.next.handler = handler
+    }
+    if (errorHandler) {
+      this.next.errorHandler = errorHandler
+    }
     return this.next
+  }
+
+  catch(errorHandler) {
+    return this.then((value) => {
+      return value
+    }, errorHandler)
   }
 }
 

@@ -11,3 +11,5 @@ As Promise is a rather complex mechanism, this repository displays the full impl
 3. **chaining**: a 'then' body will return a new Promise, which is also 'Thenable'. Once the first promise is fired, the promise chain will do the resolution towards its end automatically
 
 4. **status control**: a promise has a initial state of 'pending', and will shift either to 'resolved' or 'rejected'
+
+5. **error handling**: Promise.prototype.then' with error handler & Promise.prototype.catch' are ways to handle errors

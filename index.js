@@ -93,6 +93,63 @@ class Promise {
       return value
     }, errorHandler)
   }
+
+  static resolve(value) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(value)
+      }, 0)
+    })
+  }
+
+  static reject(value) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject(value)
+      }, 0)
+    })
+  }
+
+  static all(promises) {
+    var len = promises.length
+    var resolved = 0
+    var values = new Array(len)
+    return new Promise((resolve, reject) => {
+      promises.forEach((promise, index) => {
+        if (!(promise && promise.constructor && promise.constructor.name == 'Promise')) {
+          promise = Promise.resolve(promise)
+        }
+        promise.then((value) => {
+          values[index] = value
+          resolved++
+          if (resolved == len) {
+            resolve(values)
+          }
+        }).catch((e) => {
+          reject(e)
+        })
+      })
+    })
+  }
+
+  static race(promises) {
+    var resolved = 0
+    return new Promise((resolve, reject) => {
+      promises.forEach((promise) => {
+        if (!(promise && promise.constructor && promise.constructor.name == 'Promise')) {
+          promise = Promise.resolve(promise)
+        }
+        promise.then((value) => {
+          resolved++
+          if (resolved == 1) {
+            resolve(value)
+          }
+        }).catch((e) => {
+          reject(e)
+        })
+      })
+    })
+  }
 }
 
 module.exports = Promise

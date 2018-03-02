@@ -19,3 +19,5 @@ As Promise is a rather complex mechanism, this repository displays the full impl
 7. **auto-resolution of promise in then / catch body**: a promise returned from the callback in either a then or catch body will be automatically resolved or rejected, and the resolved value or rejected reason will appear in the next chained promise body
 
 8. **exception capture**:  besides explicit rejection, a promise can capture a thrown error or exception in its body
+
+9. **static methods**:  "Promise.resolve", "Promise.reject", "Promise.all" & "Promise.reject"

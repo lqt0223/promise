@@ -4,6 +4,8 @@ class Promise {
     this.status = 'pending'
     this.next = []
 
+    // a util function to callback the resolved value of a promise
+    // the function will modify promise chain to avoid duplicate job scheduling
     const _resolve = (p, ref, cb) => {
       p.then((value) => {
         cb(value)
@@ -11,6 +13,8 @@ class Promise {
       p.next = ref.next
     }
 
+    // determine of the second value is an immediate value or a promise
+    // do the sync or async resolution and try to resolve next
     const _resolveNext = (ref, nValue) => {
       if (ref.next) {
         if (!(nValue && nValue.constructor && nValue.constructor.name == 'Promise')) {
@@ -23,6 +27,7 @@ class Promise {
       }
     }
 
+    // propagate through the promise chain, by invoking the deferred function in sequence
     const resolveNext = (ref, value) => {
       ref.status = 'resolved'
       if (ref.handler) {
@@ -35,6 +40,8 @@ class Promise {
       }
     }
 
+    // propagate a error reason through the promise chain, until the first errorHandler is found
+    // handle the error there and resume promise chain from there
     const rejectNext = (ref, reason) => {
       if (!ref) {
         console.log('UnhandledPromiseRejectionWarning:', reason)
@@ -69,6 +76,7 @@ class Promise {
       }
     }
 
+    // if the promise constructor is called with a function, execute 'immediately'
     if (handler && handler.constructor && handler.constructor.name == 'Function') {
       setTimeout(() => {
         try {
@@ -92,6 +100,7 @@ class Promise {
     return p
   }
 
+  // generate a new promise with the resolve handler that will simply propagate the result
   catch(errorHandler) {
     return this.then((value) => {
       return value

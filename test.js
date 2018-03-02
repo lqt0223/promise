@@ -1,8 +1,13 @@
 var Promise = require('.')
 
 // test code
-var p = new Promise((e) => {
-  console.log('hello world')
+var p = new Promise((resolve) => {
+  console.log('first promise')
+  resolve(2)
 })
 
-// expected result: 'hello world'
+p.then((value) => {
+  console.log('resolved value:', value)
+})
+
+// expected result: first promise -> resolved value: 2

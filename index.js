@@ -1,8 +1,21 @@
 class Promise {
   constructor(handler) {
-    if (handler && handler.constructor && handler.constructor.name == 'Function') {
-      handler()
+    const ref = this
+    const resolve = (value) => {
+      if (ref.deferred) {
+        ref.deferred(value)
+      }
     }
+
+    if (handler && handler.constructor && handler.constructor.name == 'Function') {
+      setTimeout(() => {
+        handler(resolve)
+      }, 0)
+    }
+  }
+
+  then(deferred) {
+    this.deferred = deferred
   }
 }
 

@@ -3,11 +3,30 @@ class Promise {
     const ref = this
     this.status = 'pending'
 
+    const _resolve = (p, ref, cb) => {
+      p.then((value) => {
+        cb(value)
+      })
+      p.next = ref.next
+    }
+
+    const _resolveNext = (ref, nValue) => {
+      if (ref.next) {
+        if (!(nValue && nValue.constructor && nValue.constructor.name == 'Promise')) {
+          resolveNext(ref.next, nValue)
+        } else {
+          _resolve(nValue, ref, (nnValue) => {
+            resolveNext(ref.next, nnValue)
+          })
+        }
+      }
+    }
+
     const resolveNext = (ref, value) => {
-      if (ref && ref.handler) {
-        ref.status = 'resolved'
+      ref.status = 'resolved'
+      if (ref.handler) {
         var nValue = ref.handler(value)
-        resolveNext(ref.next, nValue)
+        _resolveNext(ref, nValue)
       }
     }
 
@@ -18,7 +37,7 @@ class Promise {
         ref.status = 'rejected'
         if (ref.errorHandler) {
           var nValue = ref.errorHandler(reason)
-          resolveNext(ref.next, nValue)
+          _resolveNext(ref, nValue)
         } else {
           rejectNext(ref.next, reason)
         }

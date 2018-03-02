@@ -20,39 +20,23 @@ var fetch = function(url) {
   })
 }
 
-var validUrl = 'https://jsonplaceholder.typicode.com/posts/1'
-var invalidUrl = 'https://whatever'
+var timeout = function(ms, value) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(value)
+    }, ms * 1000)
+  })
+}
 
-var p1 = fetch(validUrl)
-var p2 = fetch(invalidUrl)
-var p3 = fetch(invalidUrl)
-var p4 = fetch(invalidUrl)
-
-p1.then((resp) => {
-  console.log(resp, 'p1')
+timeout(1, '1').then((value) => {
+  console.log(value)
+  return timeout(2, '2')
+}).then((value) => {
+  console.log(value)
+  return timeout(3, '3')
+}).then((value) => {
+  console.log(value)
 })
 
-p2.then((resp) => {
-  console.log(resp, 'p2')
-}, (error) => {
-  console.log(error, 'p2')
-})
-
-p3.then((resp) => {
-  console.log(resp, 'p3')
-}).catch((error) => {
-  console.log(error, 'p3')
-}).then(() => {
-  console.log('the promise chain is resolved', 'p3')
-})
-
-p4.then((resp) => {
-  console.log(resp, 'p4')
-}).then(() => {
-  console.log('the promise chain is resolved', 'p4')
-})
 // expected result:
-// the first promise chain will print out server response
-// the second promise chain will print out error information
-// the third promise chain will print out error information, and will print out 'the promise chain is resolved'
-// executing the fourth promise chain will cause a UnhandledPromiseRejectionWarning
+// the console output will be: (after 1s) -> '1' -> (after 2s) -> '2' -> (after 3s) -> '3'

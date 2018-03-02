@@ -15,3 +15,5 @@ As Promise is a rather complex mechanism, this repository displays the full impl
 5. **error handling**: Promise.prototype.then' with error handler & Promise.prototype.catch' are ways to handle errors
 
 6. **error propagation**: a rejected reason will be propagated to the nearest error handler or catch body. Jobs between the rejection and the nearest error handler would not be executed. After the error handling, the promise chain resumes execution
+
+7. **auto-resolution of promise in then / catch body**: a promise returned from the callback in either a then or catch body will be automatically resolved or rejected, and the resolved value or rejected reason will appear in the next chained promise body

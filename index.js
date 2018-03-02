@@ -1,9 +1,17 @@
 class Promise {
   constructor(handler) {
     const ref = this
+
+    const resolveNext = (ref, value) => {
+      if (ref && ref.deferred) {
+        var nValue = ref.deferred(value)
+        resolveNext(ref.next, nValue)
+      }
+    }
+
     const resolve = (value) => {
-      if (ref.deferred) {
-        ref.deferred(value)
+      if (ref.next) {
+        resolveNext(ref.next, value)
       }
     }
 
@@ -15,7 +23,9 @@ class Promise {
   }
 
   then(deferred) {
-    this.deferred = deferred
+    this.next = new Promise()
+    this.next.deferred = deferred
+    return this.next
   }
 }
 

@@ -1,6 +1,8 @@
 class Promise {
-  constructor() {
-    
+  constructor(handler) {
+    if (handler && handler.constructor && handler.constructor.name == 'Function') {
+      handler()
+    }
   }
 }
 

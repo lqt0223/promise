@@ -30,13 +30,21 @@ var timeout = function(ms, value) {
 
 timeout(1, '1').then((value) => {
   console.log(value)
+  throw 'a test error in then body'
+}).then((value) => {
+  console.log(value)
   return timeout(2, '2')
+}).catch((e) => {
+  console.log(e)
+  throw 'a test error in catch body'
 }).then((value) => {
   console.log(value)
   return timeout(3, '3')
 }).then((value) => {
   console.log(value)
+}).catch((e) => {
+  console.log(e)
 })
 
 // expected result:
-// the console output will be: (after 1s) -> '1' -> (after 2s) -> '2' -> (after 3s) -> '3'
+// the console output will be: (after 1s) -> '1\na test error in then body\na test error in catch body'

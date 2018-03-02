@@ -25,8 +25,12 @@ class Promise {
     const resolveNext = (ref, value) => {
       ref.status = 'resolved'
       if (ref.handler) {
-        var nValue = ref.handler(value)
-        _resolveNext(ref, nValue)
+        try {
+          var nValue = ref.handler(value)
+          _resolveNext(ref, nValue)
+        } catch (e) {
+          rejectNext(ref, e)
+        }
       }
     }
 
@@ -36,8 +40,12 @@ class Promise {
       } else {
         ref.status = 'rejected'
         if (ref.errorHandler) {
-          var nValue = ref.errorHandler(reason)
-          _resolveNext(ref, nValue)
+          try {
+            var nValue = ref.errorHandler(reason)
+            _resolveNext(ref, nValue)
+          } catch (e) {
+            rejectNext(ref.next, e)
+          }
         } else {
           rejectNext(ref.next, reason)
         }
@@ -60,7 +68,11 @@ class Promise {
 
     if (handler && handler.constructor && handler.constructor.name == 'Function') {
       setTimeout(() => {
-        handler(resolve, reject)
+        try {
+          handler(resolve, reject)
+        } catch (e) {
+          reject(e)
+        }
       }, 0)
     }
   }

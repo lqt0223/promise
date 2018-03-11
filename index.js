@@ -78,13 +78,13 @@ class Promise {
 
     // if the promise constructor is called with a function, execute 'immediately'
     if (handler && handler.constructor && handler.constructor.name == 'Function') {
-      setTimeout(() => {
+      process.nextTick(() => {
         try {
           handler(resolve, reject)
         } catch (e) {
           reject(e)
         }
-      }, 0)
+      })
     }
   }
 
@@ -109,17 +109,17 @@ class Promise {
 
   static resolve(value) {
     return new Promise((resolve) => {
-      setTimeout(() => {
+      process.nextTick(() => {
         resolve(value)
-      }, 0)
+      })
     })
   }
 
   static reject(value) {
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
+      process.nextTick(() => {
         reject(value)
-      }, 0)
+      })
     })
   }
 
